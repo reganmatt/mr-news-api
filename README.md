@@ -18,7 +18,7 @@ and the dependencies are
 },
 ```
 
-In order to run this project locally, create two .env files
+In order to run this project locally, create two .env files in the root directory
 
 - .env.development file with PGDATABASE=nc_news
 - .env.test file with PGDATABASE=nc_news_test
