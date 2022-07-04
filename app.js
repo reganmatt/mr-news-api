@@ -6,8 +6,6 @@ const app = express();
 
 app.use(express.json());
 
-// console.log("in app");
-
 app.get("/api/topics", getTopics);
 
 app.use("*", (req, res) => {

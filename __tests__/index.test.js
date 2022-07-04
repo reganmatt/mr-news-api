@@ -17,11 +17,13 @@ describe("GET: /api/topics", () => {
       .get("/api/topics")
       .expect(200)
       .then(({ body }) => {
-        expect(body).toEqual([
-          { slug: "mitch", description: "The man, the Mitch, the legend" },
-          { slug: "cats", description: "Not dogs" },
-          { slug: "paper", description: "what books are made of" },
-        ]);
+        expect(body).toEqual({
+          topics: [
+            { slug: "mitch", description: "The man, the Mitch, the legend" },
+            { slug: "cats", description: "Not dogs" },
+            { slug: "paper", description: "what books are made of" },
+          ],
+        });
       });
   });
   test("404: returns a 404 with message if passed wrong request", () => {
