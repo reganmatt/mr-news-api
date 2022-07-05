@@ -40,28 +40,33 @@ describe("GET: /api/articles/:article_id", () => {
       .get("/api/articles/1")
       .expect(200)
       .then(({ body }) => {
-        expect(body.article).toHaveLength(1);
         expect(body).toEqual({
-          article: [
-            {
-              article_id: 1,
-              title: "Living in the shadow of a great man",
-              topic: "mitch",
-              author: "butter_bridge",
-              body: "I find this existence challenging",
-              created_at: "2020-07-09T20:11:00.000Z",
-              votes: 100,
-            },
-          ],
+          article: {
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: "2020-07-09T20:11:00.000Z",
+            votes: 100,
+          },
         });
       });
   });
   test("404: returns a 404 with message if passed wrong request", () => {
     return request(app)
-      .get("/api/articles/13")
+      .get("/api/articles/999")
       .expect(404)
       .then(({ body }) => {
-        expect(body.message).toBe("path not found");
+        expect(body.message).toBe("article not found");
+      });
+  });
+  test("422: returns a 422 with message if passed wrong datatype", () => {
+    return request(app)
+      .get("/api/articles/hello")
+      .expect(422)
+      .then(({ body }) => {
+        expect(body.message).toBe("unprocessable entity");
       });
   });
 });
@@ -89,13 +94,21 @@ describe("PATCH: /api/articles/:article_id", () => {
         });
       });
   });
-  test("422: returns a 422 with message if passed wrong datatype", () => {
+  test("422: returns a 422 with message if passed wrong vote datatype", () => {
     return request(app)
       .patch("/api/articles/1")
-      .send({ inc_votes: "string" })
+      .send({ inc_votes: "hello" })
       .expect(422)
       .then(({ body }) => {
         expect(body.message).toBe("unprocessable entity");
+      });
+  });
+  test("404: returns a 404 with message if passed wrong article id", () => {
+    return request(app)
+      .get("/api/articles/999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("article not found");
       });
   });
 });

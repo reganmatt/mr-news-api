@@ -10,25 +10,25 @@ exports.getTopics = (req, res) => {
   });
 };
 
-exports.getArticleById = (req, res) => {
+exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
-  selectArticleById(article_id).then((selectedArticle) => {
-    if (selectedArticle.length === 0) {
-      res.status(404).send({ message: "path not found" });
-    } else {
+  selectArticleById(article_id)
+    .then((selectedArticle) => {
       res.status(200).send({ article: selectedArticle });
-    }
-  });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
-exports.patchVotesByArticleId = (req, res) => {
+exports.patchVotesByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const { inc_votes } = req.body;
-  if (typeof inc_votes === "number") {
-    selectArticleWithNewVotes(article_id, inc_votes).then((selectedArticle) => {
+  selectArticleWithNewVotes(article_id, inc_votes)
+    .then((selectedArticle) => {
       res.status(200).send({ article: selectedArticle });
+    })
+    .catch((err) => {
+      next(err);
     });
-  } else {
-    res.status(422).send({ message: "unprocessable entity" });
-  }
 };

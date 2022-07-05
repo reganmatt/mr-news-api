@@ -18,4 +18,24 @@ app.use("*", (req, res) => {
   res.status(404).send({ message: "path not found" });
 });
 
+app.use((err, req, res, next) => {
+  if (err) {
+    res.status(err.status).send({ message: "article not found" });
+  } else {
+    next(err);
+  }
+});
+
+app.use((err, req, res, next) => {
+  if (err) {
+    res.status(422).send({ message: "unprocessable entity" });
+  } else {
+    next(err);
+  }
+});
+
+app.use((err, req, res, next) => {
+  res.status(500).send({ message: "server error" });
+});
+
 module.exports = app;

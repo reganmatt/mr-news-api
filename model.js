@@ -16,7 +16,11 @@ exports.selectArticleById = (articleId) => {
       [articleId]
     )
     .then((result) => {
-      return result.rows;
+      if (result.rowCount !== 0) return result.rows[0];
+      return Promise.reject({
+        status: 404,
+        message: "path not found",
+      });
     });
 };
 
@@ -27,7 +31,7 @@ exports.selectArticleWithNewVotes = (article_id, inc_votes) => {
     .query(
       `
       UPDATE articles
-      SET 
+      SET
       votes = articles.votes + $2
       WHERE
       article_id = $1
