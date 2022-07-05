@@ -5,3 +5,17 @@ exports.selectTopics = () => {
     return result.rows;
   });
 };
+
+exports.selectArticleById = (articleId) => {
+  return connection
+    .query(
+      `
+      SELECT * FROM articles
+      WHERE article_id = $1
+        `,
+      [articleId]
+    )
+    .then((result) => {
+      return result.rows;
+    });
+};
