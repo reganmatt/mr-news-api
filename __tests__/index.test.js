@@ -9,8 +9,6 @@ afterAll(() => {
   return connection.end();
 });
 
-// console.log("in test");
-
 describe("GET: /api/topics", () => {
   test("200: responds with an array of topics", () => {
     return request(app)
@@ -64,6 +62,40 @@ describe("GET: /api/articles/:article_id", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.message).toBe("path not found");
+      });
+  });
+});
+
+describe("PATCH: /api/articles/:article_id", () => {
+  test("200: responds with requested article that has appropriately updated votes value", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: 5 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toHaveLength(1);
+        expect(body).toEqual({
+          article: [
+            {
+              article_id: 1,
+              title: "Living in the shadow of a great man",
+              topic: "mitch",
+              author: "butter_bridge",
+              body: "I find this existence challenging",
+              created_at: "2020-07-09T20:11:00.000Z",
+              votes: 105,
+            },
+          ],
+        });
+      });
+  });
+  test("422: returns a 422 with message if passed wrong datatype", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: "string" })
+      .expect(422)
+      .then(({ body }) => {
+        expect(body.message).toBe("unprocessable entity");
       });
   });
 });

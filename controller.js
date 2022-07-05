@@ -1,4 +1,8 @@
-const { selectTopics, selectArticleById } = require("./model");
+const {
+  selectTopics,
+  selectArticleById,
+  selectArticleWithNewVotes,
+} = require("./model");
 
 exports.getTopics = (req, res) => {
   selectTopics().then((topics) => {
@@ -15,4 +19,16 @@ exports.getArticleById = (req, res) => {
       res.status(200).send({ article: selectedArticle });
     }
   });
+};
+
+exports.patchVotesByArticleId = (req, res) => {
+  const { article_id } = req.params;
+  const { inc_votes } = req.body;
+  if (typeof inc_votes === "number") {
+    selectArticleWithNewVotes(article_id, inc_votes).then((selectedArticle) => {
+      res.status(200).send({ article: selectedArticle });
+    });
+  } else {
+    res.status(422).send({ message: "unprocessable entity" });
+  }
 };
