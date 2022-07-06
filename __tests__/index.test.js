@@ -146,12 +146,4 @@ describe("GET: /api/users", () => {
         });
       });
   });
-  test("404: returns a 404 with message if users misspelled", () => {
-    return request(app)
-      .get("/api/uusers")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.message).toBe("path not found");
-      });
-  });
 });
