@@ -184,12 +184,29 @@ describe("GET /api/articles/:article_id/comments", () => {
         body.comments.forEach((comment) => {
           expect.objectContaining({
             comment_id: expect.any(Number),
+            article_id: expect.any(Number),
             votes: expect.any(Number),
             created_at: expect.any(Number),
             author: expect.any(String),
             body: expect.any(String),
           });
         });
+      });
+  });
+  test("404: returns a 404 with message if passed invalid article id", () => {
+    return request(app)
+      .get("/api/articles/999/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("article not found");
+      });
+  });
+  test("422: returns a 422 with message if passed article_id datatype", () => {
+    return request(app)
+      .get("/api/articles/hello/comments")
+      .expect(422)
+      .then(({ body }) => {
+        expect(body.message).toBe("unprocessable entity");
       });
   });
 });
