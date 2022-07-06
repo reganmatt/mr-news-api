@@ -92,3 +92,17 @@ exports.selectArticles = () => {
       return result.rows;
     });
 };
+
+exports.selectCommentsById = (article_id) => {
+  return connection
+    .query(
+      `
+      SELECT * FROM comments
+WHERE article_id = $1
+  `,
+      [article_id]
+    )
+    .then((result) => {
+      return result.rows;
+    });
+};
