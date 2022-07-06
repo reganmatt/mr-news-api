@@ -19,7 +19,7 @@ app.use("*", (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  if (err) {
+  if (err.status === 404) {
     res.status(err.status).send({ message: "article not found" });
   } else {
     next(err);
@@ -27,8 +27,8 @@ app.use((err, req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  if (err) {
-    res.status(422).send({ message: "unprocessable entity" });
+  if (err.status === 422) {
+    res.status(err.status).send({ message: "unprocessable entity" });
   } else {
     next(err);
   }

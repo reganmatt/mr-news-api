@@ -78,19 +78,16 @@ describe("PATCH: /api/articles/:article_id", () => {
       .send({ inc_votes: 5 })
       .expect(200)
       .then(({ body }) => {
-        expect(body.article).toHaveLength(1);
         expect(body).toEqual({
-          article: [
-            {
-              article_id: 1,
-              title: "Living in the shadow of a great man",
-              topic: "mitch",
-              author: "butter_bridge",
-              body: "I find this existence challenging",
-              created_at: "2020-07-09T20:11:00.000Z",
-              votes: 105,
-            },
-          ],
+          article: {
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: "2020-07-09T20:11:00.000Z",
+            votes: 105,
+          },
         });
       });
   });
