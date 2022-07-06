@@ -5,6 +5,7 @@ const {
   getArticleById,
   patchVotesByArticleId,
   getUsers,
+  getArticles,
 } = require("./controller");
 
 const app = express();
@@ -15,6 +16,7 @@ app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
 app.patch("/api/articles/:article_id", patchVotesByArticleId);
 app.get("/api/users", getUsers);
+app.get("/api/articles", getArticles);
 
 app.use("*", (req, res) => {
   res.status(404).send({ message: "path not found" });
