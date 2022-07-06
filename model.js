@@ -61,3 +61,15 @@ exports.selectArticleWithNewVotes = (article_id, inc_votes) => {
       });
   }
 };
+
+exports.selectUsers = () => {
+  return connection
+    .query(
+      `
+  SELECT * FROM users
+  `
+    )
+    .then((result) => {
+      return result.rows;
+    });
+};
