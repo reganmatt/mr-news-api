@@ -92,3 +92,29 @@ exports.selectArticles = () => {
       return result.rows;
     });
 };
+
+exports.selectCommentsById = (article_id) => {
+  const numArticleId = parseInt(article_id);
+  if (isNaN(numArticleId)) {
+    return Promise.reject({
+      status: 422,
+      message: "unprocessable entity",
+    });
+  } else {
+    return connection
+      .query(
+        `
+      SELECT * FROM comments
+WHERE article_id = $1
+  `,
+        [article_id]
+      )
+      .then((result) => {
+        if (result.rows.length !== 0) return result.rows;
+        return Promise.reject({
+          status: 404,
+          message: "article not found",
+        });
+      });
+  }
+};
