@@ -17,8 +17,11 @@ exports.selectArticleById = (articleId) => {
     return connection
       .query(
         `
-        SELECT * FROM articles
-        WHERE article_id = $1
+        SELECT articles.*, 
+(SELECT COUNT(*) FROM comments 
+WHERE comments.article_id = articles.article_id) 
+AS comment_count FROM articles
+WHERE article_id = $1
           `,
         [articleId]
       )
