@@ -3,6 +3,7 @@ const {
   selectArticleById,
   selectArticleWithNewVotes,
   selectUsers,
+  selectArticles,
 } = require("./model");
 
 exports.getTopics = (req, res) => {
@@ -37,5 +38,11 @@ exports.patchVotesByArticleId = (req, res, next) => {
 exports.getUsers = (req, res, next) => {
   selectUsers().then((userArr) => {
     res.status(200).send({ users: userArr });
+  });
+};
+
+exports.getArticles = (req, res, next) => {
+  selectArticles().then((articleArr) => {
+    res.status(200).send({ articles: articleArr });
   });
 };
