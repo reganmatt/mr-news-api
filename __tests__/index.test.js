@@ -35,7 +35,7 @@ describe("GET: /api/topics", () => {
 });
 
 describe("GET: /api/articles/:article_id", () => {
-  test("200: responds with labelled requested article object", () => {
+  test("200: responds with labelled requested article object, with comment count", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
@@ -49,6 +49,7 @@ describe("GET: /api/articles/:article_id", () => {
             body: "I find this existence challenging",
             created_at: "2020-07-09T20:11:00.000Z",
             votes: 100,
+            comment_count: "11",
           },
         });
       });
