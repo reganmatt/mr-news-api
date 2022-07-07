@@ -210,3 +210,44 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: adds and returns new comment with user and body", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        username: "butter_bridge",
+        body: "This is the new comment's body",
+      })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toEqual(
+          expect.objectContaining({
+            comment_id: 19,
+            article_id: 1,
+            author: "butter_bridge",
+            body: "This is the new comment's body",
+            votes: 0,
+            created_at: expect.any(String),
+          })
+        );
+      });
+  });
+  test("400: returns a 400 with message if passed missing data", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({ username: null, body: null })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("bad request, missing fields");
+      });
+  });
+  test("404: returns a 404 if article not found", () => {
+    return request(app)
+      .get("/api/articles/999/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("article not found");
+      });
+  });
+});
