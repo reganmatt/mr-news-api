@@ -118,3 +118,31 @@ WHERE article_id = $1
       });
   }
 };
+
+exports.insertCommentById = (article_id, newComment) => {
+  const { username, body } = newComment;
+  if (!username && !body) {
+    return Promise.reject({
+      status: 400,
+      message: "bad request, missing fields",
+    });
+  }
+  return connection
+    .query(
+      `
+        INSERT INTO comments
+(author, body, article_id)
+VALUES
+($1, $2, $3)
+RETURNING *;
+    `,
+      [username, body, article_id]
+    )
+    .then((result) => {
+      if (result.rows.length !== 0) return result.rows[0];
+      return Promise.reject({
+        status: 404,
+        message: "article not found",
+      });
+    });
+};
