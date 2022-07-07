@@ -65,7 +65,7 @@ exports.postCommentById = (req, res, next) => {
   const newComment = req.body;
   insertCommentById(article_id, newComment)
     .then((comment) => {
-      res.status(201).send({ comment: comment });
+      res.status(201).send({ comment });
     })
     .catch((err) => {
       next(err);

@@ -139,6 +139,7 @@ RETURNING *;
       [username, body, article_id]
     )
     .then((result) => {
+      console.log(result.rows[0]);
       if (result.rows.length !== 0) return result.rows[0];
       return Promise.reject({
         status: 404,

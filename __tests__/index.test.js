@@ -223,11 +223,11 @@ describe("POST /api/articles/:article_id/comments", () => {
       .then(({ body }) => {
         expect(body.comment).toEqual(
           expect.objectContaining({
-            comment_id: expect.any(Number),
-            article_id: expect.any(Number),
-            author: expect.any(String),
-            body: expect.any(String),
-            votes: expect.any(Number),
+            comment_id: 19,
+            article_id: 1,
+            author: "butter_bridge",
+            body: "This is the new comment's body",
+            votes: 0,
             created_at: expect.any(String),
           })
         );
