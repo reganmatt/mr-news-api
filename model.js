@@ -1,4 +1,5 @@
 const connection = require("./db/connection");
+const articles = require("./db/data/test-data/articles");
 
 exports.selectTopics = () => {
   return connection.query("SELECT * FROM topics").then((result) => {
@@ -77,20 +78,58 @@ exports.selectUsers = () => {
     });
 };
 
-exports.selectArticles = () => {
-  return connection
-    .query(
-      `
+exports.selectArticles = (sort_by = "created_at", order = "desc", topic) => {
+  const validSortOptions = [
+    "title",
+    "topic",
+    "author",
+    "body",
+    "created_at",
+    "votes",
+  ];
+  const validTopicOptions = ["cats", "mitch", "paper", undefined];
+
+  if (!["asc", "desc"].includes(order)) {
+    return Promise.reject({ status: 400, msg: "Invalid order query" });
+  }
+
+  if (!validSortOptions.includes(sort_by)) {
+    return Promise.reject("Invalid sort_by query");
+  }
+
+  if (!validTopicOptions.includes(topic)) {
+    return Promise.reject({ status: 404, msg: "article not found" });
+  }
+
+  if (topic === undefined) {
+    return connection
+      .query(
+        `
       SELECT articles.*, COUNT(comments.article_id) AS comment_count FROM articles
       LEFT JOIN comments ON articles.article_id = comments.article_id
-      -- WHERE articles.article_id = 1
       GROUP BY articles.article_id
-      ORDER BY created_at DESC
+      ORDER BY ${sort_by} ${order};
       `
-    )
-    .then((result) => {
-      return result.rows;
-    });
+      )
+      .then((result) => {
+        return result.rows;
+      });
+  } else {
+    return connection
+      .query(
+        `
+      SELECT articles.*, COUNT(comments.article_id) AS comment_count FROM articles
+      LEFT JOIN comments ON articles.article_id = comments.article_id
+      WHERE articles.topic = $1
+      GROUP BY articles.article_id
+      ORDER BY ${sort_by} ${order};
+      `,
+        [topic]
+      )
+      .then((result) => {
+        return result.rows;
+      });
+  }
 };
 
 exports.selectCommentsById = (article_id) => {
@@ -139,7 +178,6 @@ RETURNING *;
       [username, body, article_id]
     )
     .then((result) => {
-      console.log(result.rows[0]);
       if (result.rows.length !== 0) return result.rows[0];
       return Promise.reject({
         status: 404,

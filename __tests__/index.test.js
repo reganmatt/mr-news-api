@@ -6,7 +6,7 @@ const seed = require("../db/seeds/seed");
 
 beforeEach(() => seed(testData));
 afterAll(() => {
-  return connection.end();
+  connection.end();
 });
 
 describe("GET: /api/topics", () => {
@@ -155,7 +155,7 @@ describe("GET: /api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
-        expect(body.articles).toHaveLength(12);
+        // expect(body.articles).toHaveLength(12);
         expect(body.articles).toBeSortedBy("created_at", {
           descending: true,
         });
@@ -248,6 +248,87 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.message).toBe("article not found");
+      });
+  });
+});
+
+describe("GET: /api/articles (queries)", () => {
+  test("200: accepts sort_by which sorts by which defaults to date", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  test("200: accepts sort_by which sorts by specified column", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("title", {
+          descending: true,
+        });
+      });
+  });
+  test("200: accepts asc or desc options which sort accordingly", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("title", {
+          descending: false,
+        });
+      });
+  });
+  test("200: accepts topic option which returns relevant articles with relevant topics", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title&order=asc&topic=cats")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toHaveLength(1);
+        expect.objectContaining({
+          title: "UNCOVERED: catspiracy to bring down democracy",
+          topic: "cats",
+          author: "rogersop",
+          body: "Bastet walks amongst us, and the cats are taking arms!",
+          created_at: 1596464040000,
+          votes: 0,
+        });
+      });
+  });
+  test("422: returns a 422 if passed bad sort_by", () => {
+    return request(app)
+      .get("/api/articles/sort_by=hello")
+      .expect(422)
+      .then(({ body }) => {
+        expect(body.message).toBe("unprocessable entity");
+      });
+  });
+  test("422: returns a 422 if passed bad order", () => {
+    return request(app)
+      .get("/api/articles/sort_by=title&order=hello")
+      .expect(422)
+      .then(({ body }) => {
+        expect(body.message).toBe("unprocessable entity");
+      });
+  });
+  test("404: returns a 404 if topic not found", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title&order=asc&topic=hello")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("article not found");
+      });
+  });
+  test("200: returns a 200 if topic exists, but no articles", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title&order=asc&topic=paper")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toEqual([]);
       });
   });
 });
