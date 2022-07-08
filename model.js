@@ -1,6 +1,5 @@
 const connection = require("./db/connection");
 const articles = require("./db/data/test-data/articles");
-const { topicValidation } = require("./db/helpers/topicValidation");
 
 exports.selectTopics = () => {
   return connection.query("SELECT * FROM topics").then((result) => {
