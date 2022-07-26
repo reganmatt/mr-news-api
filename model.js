@@ -87,7 +87,7 @@ exports.selectArticles = (sort_by = "created_at", order = "desc", topic) => {
     "created_at",
     "votes",
   ];
-  const validTopicOptions = ["cats", "mitch", "paper", undefined];
+  // const validTopicOptions = ["cats", "mitch", "paper", undefined];
 
   if (!["asc", "desc"].includes(order)) {
     return Promise.reject({ status: 400, msg: "Invalid order query" });
@@ -97,9 +97,9 @@ exports.selectArticles = (sort_by = "created_at", order = "desc", topic) => {
     return Promise.reject("Invalid sort_by query");
   }
 
-  if (!validTopicOptions.includes(topic)) {
-    return Promise.reject({ status: 404, msg: "article not found" });
-  }
+  // if (!validTopicOptions.includes(topic)) {
+  //   return Promise.reject({ status: 404, msg: "article not found" });
+  // }
 
   if (topic === undefined) {
     return connection

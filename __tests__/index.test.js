@@ -315,14 +315,14 @@ describe("GET: /api/articles (queries)", () => {
         expect(body.message).toBe("unprocessable entity");
       });
   });
-  test("404: returns a 404 if topic not found", () => {
-    return request(app)
-      .get("/api/articles?sort_by=title&order=asc&topic=hello")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.message).toBe("article not found");
-      });
-  });
+  // test("404: returns a 404 if topic not found", () => {
+  //   return request(app)
+  //     .get("/api/articles?sort_by=title&order=asc&topic=hello")
+  //     .expect(404)
+  //     .then(({ body }) => {
+  //       expect(body.message).toBe("article not found");
+  //     });
+  // });
   test("200: returns a 200 if topic exists, but no articles", () => {
     return request(app)
       .get("/api/articles?sort_by=title&order=asc&topic=paper")
